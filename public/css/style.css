@@ -74,9 +74,9 @@ hr {
 }
 /* Navigation */
 .search-and-sort input{
-  border: 2px solid #608dfd;
+  border: 1px solid #608dfd;
   height: 50px;
-  border-radius: 30px;
+  border-radius: 5px;
 
 }
 .search-and {
@@ -93,6 +93,14 @@ hr {
 .search-andddd {
   margin-top: 5px;
 }
+.fixed-cart-icon {
+  position: fixed;
+  top: 110px; /* Adjust as needed */
+  right: 30px; /* Adjust as needed */
+  z-index: 1000; /* Adjust as needed to make sure it appears above other elements */
+}
+
+
 
 #menu {
   padding: 15px;
@@ -1376,7 +1384,7 @@ display: block;
 /************cart**************/
 .carttt{
   text-align: center;
-  padding: 100px 50px;
+  padding-top: 100px ;
   margin-top: 50px;
 }
 tfoot strong{
@@ -1393,6 +1401,9 @@ tfoot strong{
   width: 100%;
   text-align: left;
   
+}
+.tbleee th{
+  padding-right: 10px ;
 }
 .cartbuttons{
   display: flex;
@@ -1483,7 +1494,7 @@ align-items: center;
 }
 .SHOPALLL {
   margin-top: 100px;
-  padding: 100px 0 60px;
+  padding: 100px 20px 20px;
 
 }
 

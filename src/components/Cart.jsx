@@ -43,7 +43,7 @@ const Cart = ({ cart, onUpdateCartQty, onRemoveFromCart, onEmptyCart }) => {
 
   const EmptyCart = () => (
     <div className="cartxy">
-      <p>Your cart is currently empty.</p>
+      <p>Your cart Feeling Lonely.</p>
       <Link to="/Shop">
         <button className="btn btn-custom btn-lg" fdprocessedid="n7u8zq">
           Back to Shop

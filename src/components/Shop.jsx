@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Product from './Product';
 import { Col, Container, Row, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Features } from './features';
 import { Contact } from './contact';
 import { About } from './about';
 import JsonData from "../data/data.json";
+import { ToastContainer, toast } from 'react-toastify';
+import { Slide } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const Shop = ({ products, onAddToCart }) => {
   const [landingPageData, setLandingPageData] = useState({});
@@ -18,10 +22,21 @@ const Shop = ({ products, onAddToCart }) => {
 
   const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
 
-  const handleSortOptionClick = (option) => {
-    setSortOption(option);
-    setDropdownOpen(false); // Close the dropdown when an option is clicked
-  };
+  const dropdownRef = useRef();
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -36,6 +51,19 @@ const Shop = ({ products, onAddToCart }) => {
     return 0;
   });
 
+  const handleAddToCart = (productId, quantity) => {
+    const product = products.find((p) => p.id === productId);
+
+    onAddToCart(productId, quantity);
+
+    if (product) {
+      toast.success(`${product.name} added to the cart`, {
+        autoClose: 2000,
+        transition: Slide,
+      });
+    }
+  };
+
   return (
     <div>
       <Container className="SHOPALLL">
@@ -46,21 +74,23 @@ const Shop = ({ products, onAddToCart }) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} className="search-and">
-            <DropdownToggle caret onClick={toggleDropdown}>
-              Sort by: {sortOption ? sortOption.toUpperCase() : 'None'}
-            </DropdownToggle>
-            <DropdownMenu className="search-anddd">
-              <DropdownItem className="search-andddd" onClick={() => handleSortOptionClick('name')}>Sort by Name</DropdownItem>
-              <DropdownItem className="search-andddd" onClick={() => handleSortOptionClick('price')}>Sort by Price</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <div ref={dropdownRef}>
+            <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} className="search-and">
+              <DropdownToggle caret>
+                Sort by: {sortOption ? sortOption.toUpperCase() : 'None'}
+              </DropdownToggle>
+              <DropdownMenu className="search-anddd">
+                <DropdownItem className="search-andddd" onClick={() => setSortOption('name')}>Sort by Name</DropdownItem>
+                <DropdownItem className="search-andddd" onClick={() => setSortOption('price')}>Sort by Price</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
         {sortedProducts.length > 0 ? (
           <Row>
             {sortedProducts.map((product) => (
               <Col md="4" sm="12" key={product.id}>
-                <Product product={product} onAddToCart={onAddToCart} />
+                <Product product={product} onAddToCart={handleAddToCart} />
               </Col>
             ))}
           </Row>
@@ -72,6 +102,9 @@ const Shop = ({ products, onAddToCart }) => {
       <Features data={landingPageData.Features} />
       <About data={landingPageData.About} />
       <Contact data={landingPageData.Contact} />
+
+      {/* ToastContainer for displaying alerts */}
+      <ToastContainer position="bottom-right" />
     </div>
   );
 };

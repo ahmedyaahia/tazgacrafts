@@ -11,10 +11,13 @@ const CartItem = ({ item, onUpdateCartQty, onRemoveFromCart }) => {
         <p>{item.name}</p>
       </td>
       <td>
-        <p>{item.line_total.formatted_with_symbol}</p>
+        <p>{item.price.formatted_with_symbol}</p>
       </td>
       <td>
         <div>{item.quantity}</div>
+      </td>
+      <td>
+        <p>{item.line_total.formatted_with_symbol}</p>
       </td>
       <td>
         <button onClick={() => handleRemoveFromCart(item.id)}>Remove</button>

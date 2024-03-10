@@ -1,15 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaShoppingBasket } from 'react-icons/fa';
 import { Collapse, NavbarToggler } from "reactstrap";
 
 
 const Navigation = ({ totalItems }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(window.innerWidth < 768); // Set to true if screen width is below 768px
 
   const toggle = () => {
     setIsOpen(!isOpen);
   };
+
+  // Update isOpen state when the window is resized
+  useEffect(() => {
+    const handleResize = () => {
+      setIsOpen(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const isMobileView = window.innerWidth < 768;
+
   return (
     <div>
 
@@ -41,7 +57,7 @@ const Navigation = ({ totalItems }) => {
             >
               <ul className="nav navbar-nav navbar-right">
                 <li>
-                  <a className="navbar-brand page-scroll" href="/">
+                  <a className="navbar-brand page-scroll" href="/#page-top">
                     Home
                   </a>{""}
                 </li>
@@ -89,9 +105,18 @@ const Navigation = ({ totalItems }) => {
           </div>
         </nav>
       </Collapse>
+
+      {isMobileView && (
+        <div className="fixed-cart-icon">
+          <NavLink className="cartLink" to="/Cart">
+            <span>{totalItems}</span>
+            <FaShoppingBasket className='iconnm' />
+          </NavLink>
+        </div>
+      )}
     </div>
   );
 };
-export default Navigation
 
+export default Navigation;
 

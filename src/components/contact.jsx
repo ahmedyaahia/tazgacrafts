@@ -1,12 +1,12 @@
 import { useState } from "react";
 import emailjs from "emailjs-com";
-import React from "react";
 
 const initialState = {
   name: "",
   email: "",
   message: "",
 };
+
 export const Contact = (props) => {
   const [{ name, email, message }, setState] = useState(initialState);
 
@@ -14,25 +14,28 @@ export const Contact = (props) => {
     const { name, value } = e.target;
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
+
   const clearState = () => setState({ ...initialState });
-  
-  
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(name, email, message);
-        
-    emailjs
-      .sendForm("service_akgvpw2", "template_z4yfspu", e.target, "Jq23W1gJl0POLIcP9")
-      .then(
-        (result) => {
-          console.log(result.text);
-          clearState();
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
+  
+    const templateParams = {
+      to_name: "Recipient Name",  // Replace with the actual recipient name
+      from_name: name,
+      from_email: email,  // Include sender's email
+      message,
+    };
+    try {
+      // Pass templateParams directly to the send method
+      const result = await emailjs.send("service_op2mi4b", "template_457a5rs", templateParams, "ic4g6VUE7LxdN30wN");
+      console.log("Email sent successfully:", result.text);
+      clearState();
+    } catch (error) {
+      console.error("Error sending email:", error.text || error);
+    }
   };
+
   return (
     <div>
       <div id="contact">
@@ -42,7 +45,7 @@ export const Contact = (props) => {
               <div className="section-title">
                 <h2>Get In Touch</h2>
                 <p>
-                  Please fill out the form below to send us an email and we will
+                  Please fill out the form below to send us an email, and we will
                   get back to you as soon as possible.
                 </p>
               </div>
@@ -58,6 +61,7 @@ export const Contact = (props) => {
                         placeholder="Name"
                         required
                         onChange={handleChange}
+                        value={name}
                       />
                       <p className="help-block text-danger"></p>
                     </div>
@@ -72,6 +76,7 @@ export const Contact = (props) => {
                         placeholder="Email"
                         required
                         onChange={handleChange}
+                        value={email}
                       />
                       <p className="help-block text-danger"></p>
                     </div>
@@ -86,6 +91,7 @@ export const Contact = (props) => {
                     placeholder="Message"
                     required
                     onChange={handleChange}
+                    value={message}
                   ></textarea>
                   <p className="help-block text-danger"></p>
                 </div>
